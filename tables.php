@@ -1,8 +1,3 @@
-<?php
-include("config.php");
-$consulta = "select * from compras";
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,22 +85,58 @@ $consulta = "select * from compras";
           </div>
           <div class="widget-content nopadding">
             <table class="table table-bordered data-table">
-              <thead>
-                <tr>
-                  <th>Produto</th>
-                  <th>Marca</th>
-                  <th>Quantidade</th>
-                  <th>Valor Unit.</th>
-                  <th>Data Compra</th>
-                  <th>Data Valid.</th>
-                  <th>Fornecedor</th>
-                </tr>
-              </thead>
-              <?php while($dado = $consulta->fetch_array()) { ?>
-              <tbody>
-
-              </tbody>
-              <?php } ?>
+              <?php
+                // incluir arquivo de configuração com o banco
+                require_once "config.php";
+                    $sql = "SELECT * FROM compras";
+                    if($result = mysqli_query($link, $sql)){
+                        if(mysqli_num_rows($result) > 0){
+                          echo "<table class='table table-bordered table-striped'>";
+                            echo "<thead>";
+                              echo "<tr>";
+                                echo "<th>Código compra</th>";
+                                echo "<th>Produto</th>";
+                                echo "<th>Marca</th>";
+                                echo "<th>Quantidade</th>";
+                                echo "<th>Valor Unt.</th>";
+                                echo "<th>Data Compra</th>";
+                                echo "<th>Data Validade</th>";
+                                echo "<th>Fornecedor</th>";
+                                echo "<th>Ação</th>";
+                              echo "</tr>";
+                            echo "</thead>";
+                            echo "<tbody>";
+                            while($row = mysqli_fetch_array($result)){
+                                echo "<tr>";
+                                    echo "<td>" . $row['id_compra'] . "</td>";
+                                    echo "<td>" . $row['produto'] . "</td>";
+                                    echo "<td>" . $row['marca'] . "</td>";
+                                    echo "<td>" . $row['quantidade'] . "</td>";
+                                    echo "<td>" . $row['valor_unt'] . "</td>";
+                                    echo "<td>" . $row['data_compra'] . "</td>";
+                                    echo "<td>" . $row['data_valid_prod'] . "</td>";
+                                    echo "<td>" . $row['fornecedor'] . "</td>";
+                                    echo "<td>";
+                                        echo "<a href='read.php?id=". $row['id_compra'] ."' title='View Record' data-toggle='tooltip'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                                        echo "<a href='update.php?id=". $row['id_compra'] ."' title='Update Record' data-toggle='tooltip'><span class='glyphicon glyphicon-pencil'></span></a>";
+                                        echo "<a href='delete.php?id=". $row['id_compra'] ."' title='Delete Record' data-toggle='tooltip'><span class='glyphicon glyphicon-trash'></span></a>";
+                                    echo "</td>";
+                                echo "</tr>";
+                            }
+                            echo "</tbody>";                            
+                            echo "</table>";
+                            // Free result set
+                            mysqli_free_result($result);
+                        } else{
+                            echo "<p class='lead'><em>No records were found.</em></p>";
+                        }
+                    } else{
+                        echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
+                    }
+ 
+                    // encerrar conexão
+                    mysqli_close($link);
+                    ?>
             </table>
           </div>
         </div>
@@ -115,7 +146,7 @@ $consulta = "select * from compras";
   </div>
 </div>
 <div class="row-fluid">
-  <div id="footer" class="span12"> 2012 &copy; Marutii Admin. Brought to you by <a href="http://themedesigner.in">Themedesigner.in</a> </div>
+  <div id="footer" class="span12">&copy; Nevato Admin.</div>
 </div>
 <script src="js/jquery.min.js"></script> 
 <script src="js/jquery.ui.custom.js"></script> 
